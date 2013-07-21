@@ -1,0 +1,34 @@
+{% load i18n %}
+<div class="custom-navbar-inner">
+    <ul class="nav">
+
+        <li>
+            <a href="/">
+                <div class="figure">
+                    <div class="img-container">
+                        <img src="{{ STATIC_URL }}img/mainmenu_item_main.png">
+                    </div>
+                    <span>Главная</span>
+                </div>
+            </a>
+        </li>
+
+        {% for tab in tabs %}
+            <li>
+                <a href="{{ tab.link }}">
+                    <div class="figure">
+                        <div class="img-container">
+                            {%  if tab.link = "/contact" %}
+                            <img src="{{ STATIC_URL }}img/mainmenu_item_contacts.png">
+                            {% else %}
+                            <img src="{{ STATIC_URL }}img/mainmenu_item.png">
+                            {% endif %}
+                        </div>
+                        <span>{{ tab.title }}</span>
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>

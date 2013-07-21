@@ -1,0 +1,1 @@
+PRODUCTS_PATH_SUBDIR = '1cbitrix'

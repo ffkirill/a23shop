@@ -1,0 +1,39 @@
+{% load i18n lfs_tags %}
+
+<div class="portlet">
+
+    <div class="portlet-header">
+        <div class="cart pull-left">
+        <a href="{% url lfs.cart.views.cart %}"
+               title="Перейти к корзине">
+
+        <img src="{{ STATIC_URL }}img/cart.png"
+             alt="{% trans 'Cart' %}" /></a>
+        {% if amount_of_items_int %}
+
+                {% blocktrans with amount=amount_of_items_locale count counter=amount_of_items_int %}{{ amount }} Позиция{% plural %}{{ amount }} Позиций{% endblocktrans %}
+
+
+                {{ price|currency:request }}
+
+        {% else %}
+            {% trans 'Cart is empty' %}
+        {% endif %}
+        </div>
+        <div class="pull-right">
+
+            <form id="search-form" action="/search" autocomplete="off" class="navbar-search pull-left">
+                <input type="hidden" name="livesearch" value="1">
+                <input id="search-input"
+                       name="q"
+                       autocomplete="off"
+                       data-url="/livesearch"
+                       type="text"
+                       class="search-query"
+                       placeholder="Поиск в каталоге..">
+            </form>
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

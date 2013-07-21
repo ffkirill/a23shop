@@ -1,0 +1,56 @@
+{% extends "lfs/customer/base.html" %}
+{% load i18n %}
+{% load lfs_tags %}
+
+{% block title %}
+    {% trans 'My Addresses' %} - {{ block.super }}
+{% endblock %}
+
+{% block section %}my-addresses{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumbs _("Change your addresses") %}
+{% endblock %}
+
+{% block content %}
+    <h1>{% trans 'Your addresses' %}</h1>
+
+    {% if form.errors %}
+        <div class="form-errors">
+            {% trans "The operation could not be performed because one or more errors occurred. Please see below." %}
+        </div>
+    {% endif %}
+
+    <form class="address-form postal-address"
+    	  action="{% url lfs_my_addresses %}"
+          method="post"
+          invoice="{% url lfs_changed_invoice_country %}"
+          shipping="{% url lfs_changed_shipping_country %}">
+        {% csrf_token %}
+        <table class="lfs-default">
+            <tr>
+                <td>
+                    <h2>{% trans 'Invoice Address' %}</h2>
+                </td>
+                <td>
+                    <h2>{% trans 'Shipping Address' %}</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ invoice_address_inline|safe }}
+                </td>
+                <td>
+                    {{ shipping_address_inline|safe }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="lfs-default"
+                           type="submit"
+                           value="{% trans 'Save addresses' %}">
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

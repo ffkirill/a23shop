@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+{% if show %}
+    <div class="filtered-navigation-portlet portlet">
+
+        <div class="portlet-header">
+            {{ title }} <a href="{% url lfs_reset_additional_filter category.slug %}">[x]</a>
+        </div>
+
+        <div class="portlet-body">
+            <div class="portlet-item">
+                <ul class="breadcrumbs">
+                    <li class="breadcrumbs-label">Текущий выбор:</li>
+                    <li><a href="{% url lfs_reset_additional_filter category.slug %}">Все товары</a></li>
+                    {% for path_entry in path %}
+                        <li>
+
+                            >
+                            <a href='{% url lfs_set_additional_filter category.slug path_entry.id %}'>
+                                {{ path_entry.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+            <div class="portlet-item">
+                <ul class="breadcrumbs">
+                    <li class="breadcrumbs-label">Варианты:</li>
+                    {% for choice_item in choice_items %}
+                        <li>
+                            {% if not forloop.first %} | {% endif %}
+                            <a href='{% url lfs_set_additional_filter category.slug choice_item.id %}'>
+                                {{ choice_item.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    {% if not choice_items %}
+                        <li>Нет</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+
+{#        <div class="portlet-footer">#}
+{#            <a href="{% url lfs_reset_additional_filter category.slug %}">#}
+{#                {% trans 'Reset all filters' %}#}
+{#            </a>#}
+{#        </div>#}
+    </div>
+{% endif %}

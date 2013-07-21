@@ -1,0 +1,164 @@
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_theme_tags %}
+{% load lfs_portlets_tags %}
+{% load compress %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{{ SHOP.get_meta_title }}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/lightbox/jquery.lightbox-0.5.css"/>
+        <link rel="stylesheet" type="text/css"
+              href="{{ STATIC_URL }}jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css"/>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/jquery.jgrowl.css"/>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}yui/reset-fonts.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}blueprint/src/grid.css">
+        {#            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css" />#}
+    {% endcompress %}
+    <!-- Bootstrap -->
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{{ STATIC_URL }}css/custom.css" rel="stylesheet" media="screen">
+    <link href="{{ STATIC_URL }}css/portlet.css" rel="stylesheet" media="screen">
+</head>
+<body class="{% block section %}lfs{% endblock %}">
+<div class="container-fluid" id="main-container">
+
+    <!-- Login toolbar -->
+    <div class="row-fluid">
+        {% block header %}
+
+
+            <div class="login-bar pull-right">
+                {% if user.is_authenticated %}
+                    {% if user.first_name %}
+                        <span>{{ user.first_name }} {{ user.last_name }}</span>
+                    {% else %}
+                        <span>{{ user.username }}</span>
+                    {% endif %} |
+
+                    {% if user.is_superuser %}
+                        {% if category %}
+                            <a href="{% url lfs_manage_category category.id %}">{% trans 'Manage' %}</a>
+                        {% endif %}
+                        {% if product %}
+                            <a href="{% url lfs_manage_product product.id %}">{% trans 'Manage' %}</a>
+                        {% endif %}
+                        {% if page %}
+                            <a href="{% url lfs_manage_page page.id %}">{% trans 'Manage' %}</a>
+                        {% endif %}
+                        {% if not category and not product and not page %}
+                            <a href="{% url lfs_manage_dashboard %}">{% trans 'Manage' %}</a>
+                        {% endif %}
+                        |
+                    {% endif %}
+
+                    <a href="/logout">{% trans 'Logout' %}</a> |
+                    <a href="{% url lfs_my_account %}">{% trans 'My account' %}</a>
+                {% else %}
+                    {% if not ANON_ONLY %}
+                        <a href="{% url lfs_login %}">Вход для покупателей</a>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+        {% endblock %}
+    </div>
+
+    <!-- Content -->
+    <div class="row-fluid">
+        {% slots_information %}
+
+
+
+        <!-- Sidebar -->
+        <div class="span4" id="left-column">
+            {#                        {% block left-slot %}#}
+            {% lfs_portlet_slot 'Left' %}
+            {#                        {% endblock %}#}
+        </div>
+
+        <!-- Main column -->
+        <div class="span14" id="right-column">
+
+            <!-- Cart -->
+            <div class="cart-bar">
+                <ul class="cart">
+                    <li>
+                        <a href="#">
+                            <div class="img-container"><img src="{{ STATIC_URL }}img/menu_item_pay.png"></div>
+
+                            <span>Как оплатить</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/cart">
+                            <div class="img-container"><img src="{{ STATIC_URL }}img/menu_item_cart.png"></div>
+                            <span>Корзина</span>
+
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Nav -->
+            <div class="navbar">
+                {% block tabs %}
+                    {% tabs %}
+                {% endblock %}
+            </div>
+
+            <!-- Content -->
+            <div id="right-content">
+                {% block wrapper %}
+                    {% lfs_portlet_slot 'Centre' %}
+
+                    {% block right-slot-wrapper %}
+                        {% block right-slot %}
+                            {% lfs_portlet_slot 'Right' %}
+                        {% endblock %}
+                    {% endblock %}
+
+                    <div id="breadcrumbs">
+                            {% block breadcrumbs %}{% endblock %}
+                    </div>
+
+                    {% block content %}{% endblock %}
+                {% endblock %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% block google-analytics-tracking %}
+    {% google_analytics_tracking %}
+{% endblock %}
+{% block google-analytics-ecommerce %}{% endblock %}
+
+
+{% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}jquery-ui-1.8.13.custom/js/jquery-ui-1.8.13.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.form.pack.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.jgrowl_minimized.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/lightbox/jquery.lightbox-0.5.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.js"></script>
+{% endcompress %}
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</body>
+</html>

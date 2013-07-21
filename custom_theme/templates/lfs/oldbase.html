@@ -1,0 +1,183 @@
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_theme_tags %}
+{% load lfs_portlets_tags %}
+{% load compress %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>{% block title %}{{ SHOP.get_meta_title }}{% endblock %}</title>
+        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico" />
+
+        {% block head %}{% endblock %}
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+        <meta name="generator" content="LFS - http://www.getlfs.com" />
+
+        {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/lightbox/jquery.lightbox-0.5.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/jquery.jgrowl.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}yui/reset-fonts.css">
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}blueprint/src/grid.css">
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css" />
+        {% endcompress %}
+        <!--[if IE]>
+            {% compress css %}
+                <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/iefixes.css" />
+            {% endcompress %}
+        <![endif]-->
+
+        {% compress js %}
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.7.2.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery-ui-1.8.13.custom/js/jquery-ui-1.8.13.custom.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.form.pack.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.jgrowl_minimized.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.cookie.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}jquery/lightbox/jquery.lightbox-0.5.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.js"></script>
+        {% endcompress %}
+
+    </head>
+    <body class="{% block section %}lfs{% endblock %}">
+        <div id="header">
+            <div class="container">
+                {% block header %}
+                    <div class="span-6 logo">
+                        <a href="{% url lfs.core.views.shop_view %}">
+                            <img class="logo"
+                                 src="{{ STATIC_URL }}img/logo.jpg"
+                                 alt="Logo" />
+                        </a>
+                    </div>
+                    <div class="span-18 search last">
+                        {% if user.is_authenticated %}
+                            {% if user.first_name %}
+                                <span>{{ user.first_name }} {{user.last_name}}</span>
+                            {% else %}
+                                <span>{{ user.username }}</span>
+                            {% endif %} |
+
+                            {% if user.is_superuser %}
+                                {% if category %}
+                                    <a href="{% url lfs_manage_category category.id %}">{% trans 'Manage' %}</a>
+                                {% endif %}
+                                {% if product %}
+                                    <a href="{% url lfs_manage_product product.id %}">{% trans 'Manage' %}</a>
+                                {% endif %}
+                                {% if page %}
+                                    <a href="{% url lfs_manage_page page.id %}">{% trans 'Manage' %}</a>
+                                {% endif %}
+                                {% if not category and not product and not page %}
+                                    <a href="{% url lfs_manage_dashboard %}">{% trans 'Manage' %}</a>
+                                {% endif %}
+                                |
+                            {% endif %}
+
+                            <a href="/logout">{% trans 'Logout' %}</a> |
+                            <a href="{% url lfs_my_account %}">{% trans 'My account' %}</a>
+                        {% else %}
+                            {% if not ANON_ONLY %}
+                                <a href="{% url lfs_login %}">{% trans 'Login' %}</a> |
+                            {% endif %}
+
+                        {% endif %}
+                        <label for="search">{% trans 'Search' %}:</label>
+                        <form id="search-form"
+                              action="{% url lfs_search %}"
+                              autocomplete="off">
+                            <input type="hidden" name="livesearch" value="1" />
+                            <input id="search-input" value="{{ q }}" type="text" name="q" autocomplete="off" data-url="{% url lfs_livesearch %}" />
+                            <input type="submit"
+                                   value="{% trans 'Go!' %}" />
+                        </form>
+                    </div>
+                {% endblock %}
+            </div>
+            <div class="container livesearch-wrapper">
+                 <div id="livesearch-result"></div>
+            </div>
+        </div>
+
+        <div id="tabs">
+            <div class="container">
+                {% block tabs %}
+                    {% tabs %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div id="breadcrumbs">
+            <div class="container">
+                {% block breadcrumbs %}{% endblock %}
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="container">
+                {% slots_information %}
+
+                {% block wrapper %}
+                    {% block left-slot-wrapper %}
+                        {% if SlotLeft %}
+                            <div class="span-5">
+                                <div class="left-slot">
+                                    {% block left-slot %}
+                                        {% lfs_portlet_slot 'Left' %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                    <div class="{{ content_class }}">
+                        <div class="middle-slot">
+                            {% lfs_portlet_slot 'Centre' %}
+                            {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                    {% block right-slot-wrapper %}
+                        {% if SlotRight %}
+                            <div class="span-4 last">
+                                <div class="right-slot">
+                                    {% block right-slot %}
+                                        {% lfs_portlet_slot 'Right' %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div id="footer">
+            <div class="container">
+                {% block footer %}
+                    {% actions Footer %}
+                    {% for action in actions %}
+                        <a href="{{ action.link }}">{{ action.title }}</a>
+                        {% if not forloop.last %}|{% endif %}
+                    {% endfor %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div id="colophon">
+            <div class="container">
+                {% block colophon %}
+                    <p>{% trans 'Powered by' %} <a target="_blank" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop</p>
+                    <p>
+                        &copy; 2009 - 2011 {% trans 'by' %} Kai Diefenbach and contributors &mdash; {% trans 'All rights reserved' %}
+                    </p>
+                    <p>{% trans 'Distributed under the' %} <a target="_blank" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a></p>
+                {% endblock %}
+            </div>
+        </div>
+
+        {% block google-analytics-tracking %}
+            {% google_analytics_tracking %}
+        {% endblock %}
+        {% block google-analytics-ecommerce %}{% endblock %}
+
+    </body>
+</html>
