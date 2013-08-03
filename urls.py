@@ -10,6 +10,7 @@ DIRNAME = os.path.dirname(__file__)
 handler500 = 'lfs.core.views.server_error'
 
 urlpatterns = patterns("",
+    (r'', include('custom_exchange.urls')),
     (r'', include('lfs_solr.urls')),
     (r'', include('lfs_additional_categories.urls')),
     (r'', include('lfs.core.urls')),

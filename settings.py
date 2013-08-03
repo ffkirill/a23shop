@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'lfs_solr',
     'lfs_additional_categories',
+    'custom_exchange',
 )
 
 FORCE_SCRIPT_NAME=""

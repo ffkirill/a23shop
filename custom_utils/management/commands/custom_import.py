@@ -29,15 +29,18 @@ class Command(BaseCommand):
     help = 'Imports catalog information from xmls stored in 1cbitrix'
     option_list = BaseCommand.option_list + (
         make_option('--clear',
-            action='store_true',
-            dest='clear',
-            default=False,
-            help='Clears whole catalog before import'),
+                    action='store_true',
+                    dest='clear',
+                    default=False,
+                    help='Clears whole catalog before import'),
         )
 
     def handle(self, *args, **options):
 
-        lfs_solr.disconnect()
+        try:
+            lfs_solr.disconnect()
+        except:
+            pass
 
         if options['clear']:
             from custom_utils.management.commands.custom_clearcatalog import Command as ClearCommand
@@ -62,13 +65,18 @@ class Command(BaseCommand):
             for category in additional_categories:
                 update_category_entry(category, Category=lfs_additional_categories.models.AdditionalCategory)
 
-            products  = root.findall(PRODUCTS_XPATH)
+            products = root.findall(PRODUCTS_XPATH)
             for product in products:
                 update_product_entry(product)
 
 
 
         print 'Recreating indices..'
-        lfs_solr.utils.index_products()
-        lfs_solr.connect()
+
+        try:
+            lfs_solr.utils.index_products()
+            lfs_solr.connect()
+        except:
+            pass
+
         print 'Done.'

@@ -8,6 +8,7 @@ from django.conf import settings
 import lfs_additional_categories
 
 DIRNAME = settings.DIRNAME
+
 import os
 from custom_utils.settings import PRODUCTS_PATH_SUBDIR
 from django.core.files import File
@@ -52,8 +53,6 @@ def save_image_for_product(product, path):
 
 
 def update_category_entry(element, parent=None, level=1, Category=lfs.catalog.models.Category):
-
-
     uid_field = XML_TO_DJANGO_MAP['uid']
     name_field = XML_TO_DJANGO_MAP['name']
 
@@ -61,7 +60,13 @@ def update_category_entry(element, parent=None, level=1, Category=lfs.catalog.mo
     name_value = element.find(name_field).text[:49]
 
     if not parent and Category == lfs.catalog.models.Category:
-        parent = Category.objects.get(slug="all")
+        try:
+            parent = Category.objects.get(slug="all")
+        except Category.DoesNotExist:
+            parent = Category.objects.create(name=u"Товары",
+                                             slug="all",
+                                             level=1,
+                                             template=1)
         level = 2
 
     try:
@@ -90,8 +95,11 @@ def update_product_entry(element):
     uid_field = XML_TO_DJANGO_MAP['uid']
     name_field = XML_TO_DJANGO_MAP['name']
 
-    uid_value  =  element.find(uid_field).text
-    name_value =  element.find(name_field).text[:79]
+    if element.find(uid_field) is None or element.find(name_field) is None:
+        return
+
+    uid_value = element.find(uid_field).text
+    name_value = element.find(name_field).text[:79]
 
     try:
         item = Product.objects.get(uid=uid_value)
