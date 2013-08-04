@@ -6,7 +6,9 @@ ZIPFILE_SUPPORT = True
 MAX_FILE_SIZE = 5 * 1024 * 1024
 
 UPLOAD_DIR = 'upload'
-UPLOAD_PATH = os.path.normpath(os.path.join(settings.DIRNAME, '1cbitrix', UPLOAD_DIR))
+UPLOAD_PATH = os.path.normpath(os.path.join(settings.DIRNAME,
+                                            '1cbitrix',
+                                            UPLOAD_DIR))
 
 MULTIPART_ZIPFILE_PATTERN = os.path.join(UPLOAD_DIR,
                                          '*.zip.*')

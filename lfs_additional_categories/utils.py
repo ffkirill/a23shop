@@ -1,6 +1,8 @@
 from models import AdditionalCategory
 
-def get_filtered_products_for_additional_filter(all_products, additional_filter):
+
+def get_filtered_products_for_additional_filter(all_products,
+                                                additional_filter):
     try:
         category = AdditionalCategory.objects.get(pk=additional_filter)
     except AdditionalCategory.DoesNotExist:

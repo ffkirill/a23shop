@@ -63,7 +63,9 @@ class Command(BaseCommand):
 
             additional_categories = root.findall(ADDITIONAL_CATEGORIES_XPATH)
             for category in additional_categories:
-                update_category_entry(category, Category=lfs_additional_categories.models.AdditionalCategory)
+                update_category_entry(category,
+                                      Category=lfs_additional_categories.models.
+                                      AdditionalCategory)
 
             products = root.findall(PRODUCTS_XPATH)
             for product in products:

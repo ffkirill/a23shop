@@ -18,6 +18,7 @@ from lfs.catalog.views import EmptyPage, InvalidPage
 
 import lfs.catalog.utils
 
+
 def reset_filter(request, category_slug):
     """Resets all product filter. Redirects to the category with given slug.
     """
@@ -26,6 +27,7 @@ def reset_filter(request, category_slug):
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def set_filter(request, category_slug, additional_category_id=0):
     """Saves the given filter to session. Redirects to the category with given
@@ -37,7 +39,8 @@ def set_filter(request, category_slug, additional_category_id=0):
     return HttpResponseRedirect(url)
 
 
-def category_products(request, slug, start=1, template_name="lfs/catalog/categories/product/default.html"):
+def category_products(request, slug, start=1,
+                      template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
 
     This view is called if the user chooses a template that is situated in settings.PRODUCT_PATH ".
@@ -61,8 +64,10 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     product_filter = product_filter.items()
     additional_filter = request.session.get(ADDITIONAL_CATEGORY_SESSION_KEY)
 
-    cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    cache_key = "%s-category-products-%s" % (
+    settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-start-%s-sorting-%s" % (
+    settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -101,7 +106,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
 
     additional_filter_result_is_empty = False
     if additional_filter:
-        all_products_filtered = utils.get_filtered_products_for_additional_filter(all_products, additional_filter)
+        all_products_filtered = utils.get_filtered_products_for_additional_filter(
+            all_products, additional_filter)
 
         if not all_products_filtered.count() and all_products.count():
             additional_filter_result_is_empty = True
@@ -147,7 +153,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     amount_of_products = all_products.count()
 
     # Calculate urls
-    pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
+    pagination_data = lfs_pagination(request, current_page,
+                                     url=category.get_absolute_url())
 
     render_template = category.get_template_name()
     if render_template != None:
@@ -167,12 +174,14 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     return result
 
 
-def category_categories(request, slug, start=0, template_name="lfs/catalog/categories/category/default.html"):
+def category_categories(request, slug, start=0,
+                        template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
 
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
-    cache_key = "%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    cache_key = "%s-category-categories-%s" % (
+    settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -194,7 +203,6 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     if len(row) > 0:
         categories.append(row)
 
-
     result = render_to_string(template_name, RequestContext(request, {
         "category": category,
         "categories": categories,
@@ -204,19 +212,21 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     return result
 
 
-def lfs_category_hook(request, slug, template_name="lfs/catalog/category_base.html"):
+def lfs_category_hook(request, slug,
+                      template_name="lfs/catalog/category_base.html"):
     """
     """
     start = request.REQUEST.get("start", 1)
     category = lfs_get_object_or_404(Category, slug=slug)
 
     if category.get_content() == CONTENT_PRODUCTS:
-        categories_inline = category_categories(request, slug, template_name='lfs/catalog/categories/category/inline.html')
+        categories_inline = category_categories(request, slug,
+                                                template_name='lfs/catalog/categories/category/inline.html')
         inline = category_products(request, slug, start)
     else:
-        categories_inline=""
+        categories_inline = ""
         inline = category_categories(request, slug)
-    # Set last visited category for later use, e.g. Display breadcrumbs,
+        # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
 
@@ -227,5 +237,6 @@ def lfs_category_hook(request, slug, template_name="lfs/catalog/category_base.ht
         "category": category,
         "categories_inline": categories_inline,
         "category_inline": inline,
-        "top_category": lfs.catalog.utils.get_current_top_category(request, category),
+        "top_category": lfs.catalog.utils.get_current_top_category(request,
+                                                                   category),
     }))

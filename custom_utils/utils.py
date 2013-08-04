@@ -52,7 +52,8 @@ def save_image_for_product(product, path):
             logger.info("Upload image: %s %s" % (file.name, e))
 
 
-def update_category_entry(element, parent=None, level=1, Category=lfs.catalog.models.Category):
+def update_category_entry(element, parent=None, level=1,
+                          Category=lfs.catalog.models.Category):
     uid_field = XML_TO_DJANGO_MAP['uid']
     name_field = XML_TO_DJANGO_MAP['name']
 
