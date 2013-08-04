@@ -163,6 +163,7 @@ INSTALLED_APPS = (
     'lfs_solr',
     'lfs_additional_categories',
     'custom_exchange',
+    'custom_backup',
 )
 
 FORCE_SCRIPT_NAME=""

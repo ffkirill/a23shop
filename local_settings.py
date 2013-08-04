@@ -1,4 +1,4 @@
-from settings import os,DIRNAME
+from settings import os, DIRNAME
 
 DATABASES = {
     'default': {
