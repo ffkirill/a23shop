@@ -12,8 +12,10 @@ from settings import PRICE_ID
 from settings import CURRENCY_ID
 
 import os
-import zipfile
 
+from utils import do_cleanup
+from utils import extract_zipfile_uploads
+from utils import check_upload_path
 
 def process_checkauth(request):
     """Returns auth status and session id to store in cookie
@@ -24,8 +26,11 @@ def process_checkauth(request):
 
 
 def process_init(request):
-    """Returns service options
     """
+    Performs cleanup
+    Returns service options
+    """
+    do_cleanup()
     return HttpResponse("zip={0}\n"
                         "file_limit={1}".format('yes' if ZIPFILE_SUPPORT else 'no',
                                                 MAX_FILE_SIZE))
@@ -34,34 +39,26 @@ def process_init(request):
 def handle_uploaded_file(filename, path, data):
     """Stores uploaded file and extracts zipped file
     """
-    with open(filename, 'wb') as destination:
+    with open(filename, 'ab') as destination:
         destination.write(data)
 
-    if os.path.splitext(filename)[1].lower() == '.zip':
-        with zipfile.ZipFile(filename, 'r') as destination:
-            destination.extractall(path)
-        os.remove(filename)
+    # if os.path.splitext(filename)[1].lower() == '.zip':
+    #     extract_zipfile(file, path)
 
 
 def process_file(request):
     """Stores raw post data in file of 'filename' query GET value
      """
-    filename = request.GET['filename']
-    path = os.path.join(UPLOAD_PATH, filename)
+    filename = os.path.join(UPLOAD_PATH,
+                            request.GET['filename'])
 
-    if filename and request.raw_post_data:
+    check_upload_path()
 
-        if not os.path.exists(UPLOAD_PATH):
-                os.mkdir(UPLOAD_PATH, 0755)
+    handle_uploaded_file(filename,
+                         UPLOAD_PATH,
+                         request.raw_post_data)
 
-        handle_uploaded_file(os.path.join(UPLOAD_PATH, path),
-                             UPLOAD_PATH,
-                             request.raw_post_data)
-
-        return HttpResponse('success')
-
-    else:
-        return HttpResponse('failure')
+    return HttpResponse('success')
 
 
 def process_import(request):
@@ -69,22 +66,29 @@ def process_import(request):
     Currently process: 'import.xml' - Products data
                        'offers.xml' - Products prices data
     """
+    extract_zipfile_uploads()
+
     filename = request.GET['filename'].lower()
 
     if 'import' in filename:
+
         call_command("custom_import",
                      os.path.join(UPLOAD_DIR, filename),
                      clear=False)
+
         return HttpResponse('success')
 
     elif 'offers' in filename:
+
         call_command("custom_import_offers",
                      os.path.join(UPLOAD_DIR, filename),
                      price_id=PRICE_ID,
                      currency=CURRENCY_ID)
+
         return HttpResponse('success')
 
     else:
+
         return HttpResponse('failure')
 
 def process_clear(request):
