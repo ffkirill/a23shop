@@ -11,7 +11,8 @@ def do_cleanup():
     """
     Deletes everything at upload path
     """
-    shutil.rmtree(UPLOAD_PATH)
+    if os.path.exists(UPLOAD_DIR):
+        shutil.rmtree(UPLOAD_PATH)
     check_upload_path()
 
 
