@@ -27,9 +27,9 @@ DATABASES = {
         #'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         #'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         'ENGINE': 'postgresql_psycopg2',  #'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'lfs',                      # Or path to database file if using sqlite3.
-        'USER': 'lfs',                      # Not used with sqlite3.
-        'PASSWORD': 'lfs',                  # Not used with sqlite3.
+        'NAME': 'smartokru',                      # Or path to database file if using sqlite3.
+        'USER': 'smartokru',                      # Not used with sqlite3.
+        'PASSWORD': 'smartokru',                  # Not used with sqlite3.
         'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
 
@@ -240,7 +240,7 @@ LFS_UNITS = [
 
 LFS_PRICE_UNITS = LFS_BASE_PRICE_UNITS = LFS_PACKING_UNITS = LFS_UNITS
 
-LFS_LOCALE = u"ru_RU.UTF-8"
+LFS_LOCALE = u"ru_RU.utf8"
 
 LFS_LOG_FILE = DIRNAME + "/../lfs.log"
 LOGGING = {
@@ -278,8 +278,3 @@ REVIEWS_SHOW_PREVIEW = False
 REVIEWS_IS_NAME_REQUIRED = False
 REVIEWS_IS_EMAIL_REQUIRED = False
 REVIEWS_IS_MODERATED = False
-
-try:
-    from local_settings import *
-except ImportError:
-    pass

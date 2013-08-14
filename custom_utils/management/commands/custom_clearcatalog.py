@@ -32,9 +32,11 @@ class Command(BaseCommand):
         except:
             pass
 
-        for _model in (Product, Category, AdditionalCategory):
-            while _model.objects.all().count():
-                _model.objects.all()[0].delete()
+        for _set in (Product.objects.all(),
+                     Category.objects.filter(level__gt=1),
+                     AdditionalCategory.objects.all()):
+            while _set.count():
+                _set[0].delete()
 
         try:
             lfs_solr.utils.index_products()
