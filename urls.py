@@ -15,7 +15,6 @@ urlpatterns = patterns("",
     (r'', include('lfs_solr.urls')),
     (r'', include('lfs_additional_categories.urls')),
     (r'', include('lfs.core.urls')),
-    (r'', include('lfs.core.urls')),
     (r'^manage/', include('lfs.manage.urls')),
 )
 

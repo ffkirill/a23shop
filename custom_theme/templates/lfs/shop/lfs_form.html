@@ -1,18 +1,41 @@
-{% for field in form %}
-    <div class="field">
-        <div class="label">
-            {{ field.label_tag }}:
-        </div>
-        
-        {% if field.errors %}
-            <div class="error">
-                {{ field.errors }}
-                {{ field }}
-            </div>
-        {% else %}
-            <div>
-                {{ field }}
-            </div>
-        {% endif %}
+{#{% for field in form %}#}
+{#    <div class="field">#}
+{#        <div class="label">#}
+{#            {{ field.label_tag }}:#}
+{#        </div>#}
+{#        #}
+{#        {% if field.errors %}#}
+{#            <div class="error">#}
+{#                {{ field.errors }}#}
+{#                {{ field }}#}
+{#            </div>#}
+{#        {% else %}#}
+{#            <div>#}
+{#                {{ field }}#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    </div>#}
+{#{% endfor %}#}
+
+
+{% load widget_tweaks %}
+
+{# Include the hidden fields #}
+{#    {% csrf_token %}#}
+{% for hidden in form.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+{# Include the visible fields #}
+{% for field in form.visible_fields %}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label class="control-label" for="id_{{ field.html_name }}">
+        {% if field.field.required %} <strong>{% endif %} {{ field.label }} {% if field.field.required %}</strong>{% endif %}
+    </label>
+    <div class="controls input-xxlarge">
+        {{ field|add_class:"input-xxlarge"}}
+    {% if field.errors %}
+        <span class="help-block">{{ field.errors }}</span>
+    {% endif %}
     </div>
+</div>
 {% endfor %}

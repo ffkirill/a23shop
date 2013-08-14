@@ -9,7 +9,7 @@
 {% block section %}contact-form{% endblock %}
 
 {% block breadcrumbs %}
-    {% breadcrumbs _("Contact") %}
+    {% breadcrumbs "Контакты" %}
 {% endblock %}
 
 {% block content %}
@@ -20,15 +20,18 @@
     </p>
 
     <form action="{% url lfs_contact_form %}"
-          method="post">
+          method="post"
+          class="form-horizontal">
 
         {% csrf_token %}
         {% include "lfs/shop/lfs_form.html" %}
 
-        <div class="buttons">
-            <button class="button emphasized left"
-                   type="submit">{% trans 'Send' %}</button>
+        <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn">{% trans 'Send' %}</button>
+            </div>
         </div>
+
     </form>
 
 {% endblock %}

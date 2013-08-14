@@ -83,8 +83,8 @@ class Command(BaseCommand):
         tabs = ActionGroup.objects.create(name="Tabs")
         footer = ActionGroup.objects.create(name="Footer")
         Action.objects.create(group=tabs, title=u"Контакты", link="/contact", active=True, position=1)
-        Action.objects.create(group=footer, title=u"Соглашение об использовании", link="/page/terms-and-conditions", active=True, position=1)
-        Action.objects.create(group=footer, title="Imprint", link="/page/imprint", active=True, position=2)
+        # Action.objects.create(group=footer, title=u"Соглашение об использовании", link="/page/terms-and-conditions", active=True, position=1)
+        # Action.objects.create(group=footer, title="Imprint", link="/page/imprint", active=True, position=2)
 
         #Catalog
         category = Category.objects.create(name=u"Товары",
@@ -103,8 +103,8 @@ class Command(BaseCommand):
         categories_portlet = CategoriesPortlet.objects.create(title=u"Товары")
         PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=categories_portlet)
 
-        pages_portlet = PagesPortlet.objects.create(title=u"Информация")
-        PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=pages_portlet)
+        # pages_portlet = PagesPortlet.objects.create(title=u"Информация")
+        # PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=pages_portlet)
 
         additional_filter_portlet = AdditionalFilterPortlet.objects.create(title=u"Товары по модели",
                                                                            default_category=category)
@@ -126,11 +126,11 @@ class Command(BaseCommand):
         # Pages
         p = Page.objects.create(title=u"Главная страница", slug="", active=1, exclude_from_navigation=1)
         p.id = 1; p.save()
-        p = Page.objects.create(title=u"Соглашение об использовании", slug="terms-and-conditions", active=1,
-                                body=u"Введите текст соглашения об использовании.")
-        p.id = 2; p.save()
-        p = Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
-        p.id = 3; p.save()
+        # p = Page.objects.create(title=u"Соглашение об использовании", slug="terms-and-conditions", active=1,
+        #                         body=u"Введите текст соглашения об использовании.")
+        # p.id = 2; p.save()
+        # p = Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
+        # p.id = 3; p.save()
 
         # Order Numbers
         ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
