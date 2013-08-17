@@ -82,7 +82,7 @@ def process_import(request):
 
         call_command("custom_import_offers",
                      os.path.join(UPLOAD_DIR, filename),
-                     price_id=PRICE_ID,
+                     price_id=None,
                      currency=CURRENCY_ID)
 
         return HttpResponse('success')

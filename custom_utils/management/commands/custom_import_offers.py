@@ -3,8 +3,8 @@ from django.core.management.base import BaseCommand
 from xml.etree import ElementTree
 import os
 
-from settings import DIRNAME
-from custom_utils.settings import PRODUCTS_PATH_SUBDIR
+from django.conf import settings
+from ...settings import PRODUCTS_PATH_SUBDIR
 
 from optparse import make_option
 
@@ -13,8 +13,18 @@ import lfs_solr
 from lfs.catalog.models import Product
 
 _XML_ROOT_TAG = u'КоммерческаяИнформация'
+_PRICE_TYPE_XPATH = u"ПакетПредложений/ТипыЦен/ТипЦены[1]"
 _OFFERS_XPATH_TEMPLATE = u"ПакетПредложений/Предложения/Предложение"
 _PRICES_XPATH_TEMPLATE = u"Цены/Цена[ИдТипаЦены='{0}'][Валюта='{1}']"
+
+
+def get_price_type_id(xml_root):
+    """
+    Returns default (first) price type id in xml
+    """
+    price_type_entry = xml_root.find(_PRICE_TYPE_XPATH)
+    if price_type_entry:
+        return price_type_entry.find(u"Ид").text
 
 
 def _set_price_for_product(product_uid, unit, price):
@@ -32,7 +42,7 @@ class Command(BaseCommand):
         make_option('-p', '--price-id',
                     action='store',
                     dest='price_id',
-                    default=u'55da4af6-f57c-11de-82d3-001e8c1a8cef',
+                    default=None,
                     help='Price category uid'),
 
         make_option('-c', '--currency',
@@ -48,7 +58,7 @@ class Command(BaseCommand):
 
         for arg in args:
 
-            path = os.path.join(DIRNAME, PRODUCTS_PATH_SUBDIR, arg)
+            path = os.path.join(settings.DIRNAME, PRODUCTS_PATH_SUBDIR, arg)
             print(path)
             print 'Importing {0}...'.format(path)
 
@@ -59,11 +69,13 @@ class Command(BaseCommand):
                 print('Invalid xml file format')
                 return
 
+            price_type_id = options['price_id'] or get_price_type_id(root)
+
             offers = root.findall(_OFFERS_XPATH_TEMPLATE)
 
             for offer_entry in offers:
                 prices = offer_entry.findall(_PRICES_XPATH_TEMPLATE.format(
-                    options['price_id'],
+                    price_type_id,
                     options['currency'],
                 ))
 
