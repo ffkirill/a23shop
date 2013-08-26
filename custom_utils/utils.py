@@ -42,9 +42,9 @@ def slug_make_unique(slug, item, increment=0):
     return slug_make_unique(slug, item, count + increment)
 
 
-def save_image_for_product(product, path):
-    image = Image(content=product, title=path)
-    with open(os.path.join(DIRNAME, PRODUCTS_PATH_SUBDIR, path), 'rb') as file:
+def save_image_for_product(product, dirname, filename):
+    image = Image(content=product, title=filename)
+    with open(os.path.join(dirname, filename), 'rb') as file:
         try:
             f = File(file)
             image.image.save(file.name, content=f, save=True)
@@ -92,7 +92,7 @@ def update_category_entry(element, parent=None, level=1,
         update_category_entry(subelement, item, level + 1, Category)
 
 
-def update_product_entry(element):
+def update_product_entry(element, dirname):
     uid_field = XML_TO_DJANGO_MAP['uid']
     name_field = XML_TO_DJANGO_MAP['name']
 
@@ -128,13 +128,12 @@ def update_product_entry(element):
 
     picture_entry = element.find(PRODUCT_PICTURE_TAG)
     if picture_entry is not None:
-        save_image_for_product(item, picture_entry.text)
+        save_image_for_product(item, dirname, picture_entry.text)
 
     additional_category_entry = element.find(PRODUCT_ADDITIONAL_CATEGORY_TAG)
     if additional_category_entry is not None:
-        additional_category = lfs_additional_categories.models.AdditionalCategory.objects.get(
-            uid=additional_category_entry.text
-        )
+        additional_category = lfs_additional_categories.models.\
+            AdditionalCategory.objects.get(uid=additional_category_entry.text)
         item.additional_categories.add(additional_category)
 
     item.save()

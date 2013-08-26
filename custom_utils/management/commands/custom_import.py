@@ -69,7 +69,7 @@ class Command(BaseCommand):
 
             products = root.findall(PRODUCTS_XPATH)
             for product in products:
-                update_product_entry(product)
+                update_product_entry(product, os.path.dirname(path))
 
 
 
